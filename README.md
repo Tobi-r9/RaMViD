@@ -1,6 +1,9 @@
-﻿# RaMViD
-
-**Paper**: https://arxiv.org/abs/2206.07696
+# RaMViD - Random-Mask Video Diffusion
+ 
+This repository contains the official code for our paper:
+> [Diffusion Models for Video Prediction and Infilling](https://arxiv.org/abs/2206.07696) <br/>
+> Tobias Höppe, Arash Mehrjou, Stefan Bauer, Didrik Nielsen, Andrea Dittadi <br/>
+> TMLR, 2022
 
 **Website**: https://sites.google.com/view/video-diffusion-prediction
 
