@@ -13,7 +13,7 @@ import pickle
 
 import os, sys
 sys.path.insert(1, os.getcwd()) 
-from utils.plot import SampleSaver
+
 
 from diffusion_openai.video_datasets import load_data
 from diffusion_openai import dist_util, logger
@@ -42,8 +42,7 @@ def main():
     )
     model.to(dist_util.dev())
     model.eval()
-    sample_saver = SampleSaver(logger.get_dir())
-    cond_kwargs = {"saver":sample_saver}
+    cond_kwargs = {}
     cond_len = 0
     cond_frames = []
     # get data to condition on
@@ -68,8 +67,8 @@ def main():
         logger.log(f"cond_frames: {cond_frames}")
         logger.log(f"ref_frames: {ref_frames}")
         logger.log(f"seq_len: {args.seq_len}")
-        cond_kwargs["resampling_steps"] = args.resample_steps
         cond_len = len(cond_frames)
+    cond_kwargs["resampling_steps"] = args.resample_steps
     cond_kwargs["cond_frames"] = cond_frames
 
     if args.rgb:
@@ -153,13 +152,13 @@ def main():
         shape_str = "x".join([str(x) for x in arr.shape])
         name = f"{shape_str}_{len(args.cond_frames)}"
         logger.log(f"saving samples to {os.path.join(logger.get_dir(), name)}")
-        sample_saver.save_from_np(arr, name=name, create_gif=args.save_gif)
+        np.savez(os.path.join(logger.get_dir(), shape_str), arr)
 
         if args.cond_generation and args.save_gt:
-            shape_str = "x".join([str(x) for x in arr_gt.shape])
+            shape_str_gt = "x".join([str(x) for x in arr_gt.shape])
             name_gt = f"{shape_str}_{len(args.cond_frames)}"
             logger.log(f"saving ground_truth to {os.path.join(logger.get_dir(), name_gt)}")
-            sample_saver.save_from_np(arr_gt, destination="ground_truth", create_gif=False)
+            np.savez(os.path.join(logger.get_dir(), shape_str_gt), arr_gt)
 
     dist.barrier()
     logger.log("sampling complete")
